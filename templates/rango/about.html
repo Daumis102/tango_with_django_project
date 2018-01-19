@@ -7,16 +7,18 @@
 	</head>
 	
 	<body>
-		<h1> Rango says here is the about page</h1>
+		<h1> Rango says...</h1>
 		<div>
 			This tutorial has been put together by Daumantas Pagojus <br>
 		</div>
 		<div>
-			<img src="{{MEDIA_URL}}cat.jpg"
-			alt="Picture of a cat" /><br>
+			<img src='{{MEDIA_URL}}under_constr.png'
+			alt="Under Construction" /><br>
+			<img src="{% static "images/rango.jpg" %}"
+				alt="Picture of Rango" /><br>
 		</div>
 		<div>
-			<a href="/rango/'>Index</a><br />
+			<a href='/rango/'>Index</a><br />
 		</div>
 	</body>
 </html>
