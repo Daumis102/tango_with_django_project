@@ -39,6 +39,9 @@ MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
+# ensure that the login_required() redirects to login page
+LOGIN_URL = '/rango/login/'
+
 
 
 

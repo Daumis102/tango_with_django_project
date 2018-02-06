@@ -3,11 +3,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm
 from rango.forms import UserForm, UserProfileForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+
 
 
 def index(request):
+
+    request.session.set_test_cookie()
     # Query the database for a list of all the categories currently storred
     # Order the categories by no. likes in descending order
     # Retrieve the top 5 only - or all if it is less than 5
@@ -22,6 +26,9 @@ def index(request):
     return render(request, 'rango/index.html', context=context_dict)
 
 def about(request):
+    if request.session.test_cookie_worked():
+        print('TEST COOKIE WORKED!')
+    
     context_dict = {}
     return render(request, 'rango/about.html')
 
@@ -206,7 +213,18 @@ def user_login(request):
         # No context variables to pass to the template system, hence the
         # blank dictionary object..
         return render(request, 'rango/login.html',{})
-        
+
+@login_required
+def restricted(request):
+    return render(request, 'rango/restricted.html', {})
+
+# use the login_required() decorator to ensure only those logged in can access the view
+@login_required
+def user_logout(request):
+    # since we know the user is logged in, we can now just log them out.
+    logout(request)
+    # Take the user back to the homepage
+    return HttpResponseRedirect(reverse('index'))
 
                                        
     
