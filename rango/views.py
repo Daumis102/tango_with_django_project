@@ -6,6 +6,7 @@ from rango.forms import UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 
 
@@ -22,8 +23,18 @@ def index(request):
     pages = Page.objects.order_by('-views')[:5]
     context_dict = {'categories': categories,
                     'pages': pages}
+
+	# call the helper function to handle the COOKIES
+	visitor_cookie_handler(request)
+	context_dict['visits'] = request.session['visits']
     
-    return render(request, 'rango/index.html', context=context_dict)
+	# Obtain out Response object early so we can add cookie information
+	response = render(request, 'rango/index.html', context=context_dict)
+
+	
+
+	# return response back to user, updating any cookies that need changed
+    return response
 
 def about(request):
     if request.session.test_cookie_worked():
@@ -218,6 +229,9 @@ def user_login(request):
 def restricted(request):
     return render(request, 'rango/restricted.html', {})
 
+
+
+
 # use the login_required() decorator to ensure only those logged in can access the view
 @login_required
 def user_logout(request):
@@ -226,5 +240,34 @@ def user_logout(request):
     # Take the user back to the homepage
     return HttpResponseRedirect(reverse('index'))
 
-                                       
-    
+def visitor_cookie_handler(request):
+	# Get the number of visits to the site.
+	# we use the COOKIES.get() function to obtain the visits cookie.
+	# if the cookie exists, the value returned is casted to an integer
+	# if the cookie doesnt exist, then the default value of 1 is used
+	visits = int(get_server_side_cookie(request, 'visits', '1'))
+
+	last_visit_cookie = get_server_side_cookie(request, 'last_visit',str(datetime.now()))
+	last_visit_time = datetime.strptime(last_visit_cookie[:-7],
+												'%Y-%m-%d %H:%M:%S')
+	# if its been more than a day since the last visit...
+	if(datetime.now() - last_visit_time).days > 0:
+		visits++;
+		# Update the last visit cookie now that we have updated the count
+		request.session['last_visit'] = str(datetime.now())
+	else:
+		visits = 1
+		# set the last visit cookie
+		request.session['last_visit'] = last_visit_cookie
+
+	#update/set the visits COOKIE
+	request.session['visits'] = visits
+
+def get_server_side_cookie(request, cookie, default_val=None):
+	val = request.session.get(cookie)
+	if not val:
+		val = default_val
+	return val
+
+
+		
