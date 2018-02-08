@@ -12,7 +12,7 @@
         <a href="{% url 'index' %}"> Return to the homepage.</a><br/>
     {% else %}
         Rango says: <strong>register here!</strong>
-        Click <a href="{% url 'index' %}"> here</a> to go to the homepage.<br />
+        <!--Click <a href="{% url 'index' %}"> here</a> to go to the homepage.<br /> -->
         <form id="user_form" method="POST" action="{% url 'register' %}" enctype="multipart/form-data">
 
             {% csrf_token %}
