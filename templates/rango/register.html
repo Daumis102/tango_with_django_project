@@ -1,4 +1,4 @@
-﻿{% extends 'rango/base.html' %}
+{% extends 'rango/base.html' %}
 {% load staticfiles %}
 
 {% block title_block %}
@@ -9,10 +9,10 @@
    <h1>Register for Rango</h1>
     {% if registered %}
         Rango says: <strong>thank you for registering!</strong>
-<a href="{% url 'index' %}"> Return to the homepage.</a><br />
+	<a href="{% url 'index' %}"> Return to the homepage.</a><br />
     {% else %}
 
-        Rango says: <strong>register here!</strong>
+        Rango says: <strong>register here!</strong><br />
         Click <a href="{% url 'index' %}"> here</a> to go to the homepage.<br />
 
 <form id="user_form" method="POST" action="{% url 'register' %}" enctype="multipart/form-data">
